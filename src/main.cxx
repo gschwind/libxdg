@@ -29,7 +29,7 @@ using namespace std;
 
 int main(int argc, char ** argv)
 {
-	for (auto & f: xdg::desktop_file::list_all_applications(xdg::getenv_lang())) {
+	for (auto & f: xdg::application::list_all_applications(xdg::getenv_lang())) {
 		cout << f;
 	}
 

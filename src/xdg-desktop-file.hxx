@@ -73,11 +73,19 @@ struct desktop_file : public std::unordered_map<std::string, group>
 {
 	std::string filename;
 
+
 	friend std::ostream & operator<<(std::ostream & out, desktop_file const & file);
 
 	desktop_file(std::string const & filename, std::string const & lang);
 
-	static std::vector<desktop_file> list_all_applications(std::string const & lang);
+};
+
+struct application : public desktop_file {
+	std::string id;
+
+	application(std::string const & filename, std::string const & id, std::string const & lang);
+
+	static std::vector<application> list_all_applications(std::string const & lang);
 
 };
 

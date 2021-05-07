@@ -156,12 +156,19 @@ desktop_file::desktop_file(string const & filename, string const & lang) :
 
 }
 
-
-vector<desktop_file> desktop_file::list_all_applications(string const & lang)
+application::application(string const & filename, string const & id, string const & lang) :
+		desktop_file{filename, lang},
+		id{id}
 {
-	static regex const desktop_file_patern{"^.+\\.desktop$"};
 
-	vector<desktop_file> list;
+}
+
+
+vector<application> application::list_all_applications(string const & lang)
+{
+	static regex const desktop_file_patern{"^(.+)\\.desktop$"};
+
+	vector<application> list;
 	stack<string> pending_directories;
 
 	char const * XDG_DATA_DIRS = std::getenv("XDG_DATA_DIRS");
@@ -190,9 +197,10 @@ vector<desktop_file> desktop_file::list_all_applications(string const & lang)
 			if (p->d_type == DT_DIR or p->d_type == DT_UNKNOWN)
 				pending_directories.push(curdir+"/"+p->d_name);
 			if (p->d_type == DT_REG or p->d_type == DT_UNKNOWN) {
-				if (regex_match(p->d_name, desktop_file_patern)) {
+				cmatch m;
+				if (regex_match(p->d_name, m, desktop_file_patern)) {
 					cout << p->d_name << endl;
-					list.emplace_back(desktop_file(curdir+"/"+p->d_name, lang));
+					list.emplace_back(application(curdir+"/"+p->d_name, m[1], lang));
 				}
 			}
 		}
